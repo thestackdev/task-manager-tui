@@ -1,20 +1,15 @@
-use ratatui::{DefaultTerminal, Frame};
+mod app;
 
-fn main() -> color_eyre::Result<()> {
+use app::App;
+use color_eyre::Result;
+
+fn main() -> Result<()> {
     color_eyre::install()?;
-    ratatui::run(app)?;
-    Ok(())
-}
 
-fn app(terminal: &mut DefaultTerminal) -> std::io::Result<()> {
-    loop {
-        terminal.draw(render)?;
-        if crossterm::event::read()?.is_key_press() {
-            break Ok(());
-        }
-    }
-}
+    let terminal = ratatui::init();
+    let app_result = App::default().run(terminal);
 
-fn render(frame: &mut Frame) {
-    frame.render_widget("hello world", frame.area());
+    ratatui::restore();
+
+    app_result
 }
